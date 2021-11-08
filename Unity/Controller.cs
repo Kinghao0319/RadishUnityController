@@ -23,7 +23,7 @@ public class Controller : MonoBehaviour
         public bool useGlobalX;
 
         public Frame() { }
-        public Frame(float[] p, float[] r, float[] s, int t, string c,bool uX)
+        public Frame(float[] p, float[] r, float[] s, int t, string c, bool uX)
         {
             position = p;
             rotation = r;
@@ -36,23 +36,23 @@ public class Controller : MonoBehaviour
     Queue q = new Queue();
     Hashtable ht = new Hashtable();
     float globalX = 0;
-    bool[] used=new bool[20];
-    
+    bool[] used = new bool[20];
+
     // Start is called before the first frame update
     void Start()
     {
         ht.Add(1, obj1);
         ht.Add(2, obj2);
         ht.Add(3, obj3);
-        Frame f = new Frame(new float[3] { 0, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 },1, "Pulling A Rope",true);
-        
+        Frame f = new Frame(new float[3] { 0, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 1, "Pulling A Rope", true);
+
         q.Enqueue(f);
         readFile();
     }
     int finishedLineNumber = 0;
     void readFile()
     {
-        Debug.Log("Read Here!");
+        //Debug.Log("Read Here!");
         StreamReader sr = new StreamReader("E:\\pycharm\\real_time_audio\\a.txt", Encoding.UTF8);
         String line;
         for (int i = 0; i < finishedLineNumber; i++)
@@ -64,7 +64,6 @@ public class Controller : MonoBehaviour
             Debug.Log(line);
             if (line.Contains("ÍÃ×Ó"))
             {
-                Debug.Log("ÍÃ×Ó£¡£¡£¡");
                 Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 2, "Pulling A Rope", true);
                 q.Enqueue(f);
             }
@@ -79,17 +78,17 @@ public class Controller : MonoBehaviour
 
     }
     // Update is called once per frame
-    float lastTime=0,time=0;
+    float lastTime = 0, time = 0;
     void FixedUpdate()
     {
         time += Time.deltaTime;
         //Debug.Log(time - lastTime);
-        if (time - lastTime > 5)
+        if (time - lastTime > 3)
         {
             lastTime = time;
             readFile();
         }
-        
+
         //Get an element from the queue
         if (q.Count > 0)
         {
@@ -112,12 +111,12 @@ public class Controller : MonoBehaviour
         }
         if (Input.GetKey("d"))
         {
-            Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 2, "Pulling A Rope",true);
+            Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 2, "Pulling A Rope", true);
             q.Enqueue(f);
         }
         if (Input.GetKey("f"))
         {
-            Frame f = new Frame(new float[3] { 6, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 3, "Pulling A Rope",true);
+            Frame f = new Frame(new float[3] { 6, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 3, "Pulling A Rope", true);
             q.Enqueue(f);
         }
     }

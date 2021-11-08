@@ -46,7 +46,8 @@ audio_buf=[]
 audio_len=0
 index=0
 buf_time = 2
-
+fo = open("a.txt", "w",encoding='utf-8')
+fo.close()
 import time
 import threading
 
