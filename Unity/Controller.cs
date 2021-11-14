@@ -13,6 +13,9 @@ public class Controller : MonoBehaviour
     public GameObject obj1;
     public GameObject obj2;
     public GameObject obj3;
+    public GameObject obj4;
+    public GameObject obj5;
+    public GameObject radish;
     class Frame
     {
         public float[] position;
@@ -34,19 +37,26 @@ public class Controller : MonoBehaviour
         }
     }
     Queue q = new Queue();
+    Queue characterQueue = new Queue();
     Hashtable ht = new Hashtable();
     float globalX = 0;
+    int curCount = 0, radishGetoutNum = 5;
     bool[] used = new bool[20];
+    String radishSignal = "萝卜越长越大";
+    String comingSignal = "快来帮忙拔萝卜";
+    String comingWord = "来了";
 
     // Start is called before the first frame update
     void Start()
     {
+        radish.GetComponent<Animator>().SetTrigger("away_canvas");
         ht.Add(1, obj1);
         ht.Add(2, obj2);
         ht.Add(3, obj3);
-        Frame f = new Frame(new float[3] { 0, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 1, "Pulling A Rope", true);
+        ht.Add(4, obj4);
+        ht.Add(5, obj5);
+        ht.Add(0, radish);
 
-        q.Enqueue(f);
         readFile();
     }
     int finishedLineNumber = 0;
@@ -62,15 +72,37 @@ public class Controller : MonoBehaviour
         while ((line = sr.ReadLine()) != null)
         {
             Debug.Log(line);
-            if (line.Contains("兔子"))
+            if (line.Contains("老公公就去拔萝卜"))
             {
-                Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 2, "Pulling A Rope", true);
+                Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 1, "Pulling A Rope", true);
                 q.Enqueue(f);
             }
-            if (line.Contains("老鼠"))
+            if (line.Contains("老婆婆" + comingSignal) || line.Contains("老婆婆，" + comingSignal))
             {
-                Frame f = new Frame(new float[3] { 6, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 3, "Pulling A Rope", true);
+                characterQueue.Enqueue(2);
+            }
+            if (line.Contains("小姑娘" + comingSignal) || line.Contains("小姑娘，" + comingSignal))
+            {
+                characterQueue.Enqueue(3);
+            }
+            if (line.Contains("小花狗" + comingSignal) || line.Contains("小花狗，" + comingSignal))
+            {
+                characterQueue.Enqueue(4);
+            }
+            if (line.Contains("小花猫" + comingSignal) || line.Contains("小花猫，" + comingSignal))
+            {
+                characterQueue.Enqueue(5);
+            }
+            if (line.Contains(comingWord + comingWord) || line.Contains(comingWord + "，" + comingWord))
+            {
+                Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, (int)characterQueue.Dequeue(), "Pulling A Rope", true);
                 q.Enqueue(f);
+            }
+            if (line.Contains(radishSignal))
+            {
+                //Frame f = new Frame(new float[3] { -2.3F, 0.67F, 90 }, new float[3] { 0, 0, 0 }, new float[3] { 1, 1, 1 },0, "", false);
+                //q.Enqueue(f);
+                radish.GetComponent<Animator>().SetTrigger("new_idle");//萝卜首次出现
             }
             finishedLineNumber += 1;
         }
@@ -104,8 +136,13 @@ public class Controller : MonoBehaviour
                 cur.transform.position = new Vector3(f.position[0], f.position[1], f.position[2]);
                 cur.transform.rotation = Quaternion.Euler(f.rotation[0], f.rotation[1], f.rotation[2]);
                 used[f.type] = true;
+                curCount++;
+                if (curCount == radishGetoutNum)
+                {
+                    radish.GetComponent<Animator>().SetTrigger("new_getout");
+                }
                 //Set scale here
-                //cur.GetComponent<Animation>().Play(f.content); //不加这句竟然也有动画
+                //cur.GetComponent<Animation>().Play(f.content); //播放动画用trigger
             }
 
         }
@@ -113,6 +150,7 @@ public class Controller : MonoBehaviour
         {
             Frame f = new Frame(new float[3] { 3, 0, 90 }, new float[3] { 0, 180, 0 }, new float[3] { 1, 1, 1 }, 2, "Pulling A Rope", true);
             q.Enqueue(f);
+
         }
         if (Input.GetKey("f"))
         {
